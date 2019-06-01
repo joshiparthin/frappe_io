@@ -2,20 +2,21 @@
 <!-- add-breadcrumbs -->
 # Installation
 
-> These steps assume you want to install Bench in developer mode. If you want install in production mode, follow the [Easy Install](https://github.com/frappe/bench#easy-install) method.
+Frappe installation involves certain steps according to the Operating system and dependencies:
 
-## System Requirements
+1. [Installing Pre-requisites](#pre-requisites)
+1. [Installing Bench CLI](#bench)
+1. [Initialising Frappe Bench and start the site](#initialise-bench-and-start-the-site)
+1. [Creating a new site](#creating-a-new-site)
+1. [Installing Existing App (ERPNext Example)](#installing-existing-app)
 
-This guide assumes you are using a personal computer, VPS or a bare-metal server. You also need to be on a *nix system, so any Linux Distribution and MacOS is supported. However, we officially support only the following distributions.
+--- 
 
-1. [MacOS](#macos)
-1. [Debian / Ubuntu](#debian-ubuntu)
-1. [Arch Linux](#arch-linux)
-1. CentOS
+## Pre-requisites for Frappe Environment
 
-> Learn more about the architecture [here](/docs/installation/architecture).
+### Pre-requisites
 
-## Pre-requisites
+Frappe requires a set of requirements and dependencies for setting up development and production environmnent. Some of the higher level pre-requisites are:
 
 1. Python 2.7 (Python 3.5+ also supported)
 1. MariaDB 10+
@@ -26,6 +27,25 @@ This guide assumes you are using a personal computer, VPS or a bare-metal server
 1. Redis
 1. cron (crontab is required)
 1. wkhtmltopdf with patched Qt (version 0.12.3) (for pdf generation)
+
+### Installing pre-requisistes in different platforms
+
+
+> These steps assume you want to install Bench in developer mode. If you want install in production mode, follow the [Easy Install](https://github.com/frappe/bench#easy-install) method. This method will also take care of installing the pre-requisites according to supported operating system.
+
+This section will guide you through installation of requirements in different platforms:
+
+
+1. [MacOS](#macos)
+1. [Debian / Ubuntu](#debian-ubuntu)
+1. [Arch Linux](#arch-linux)
+1. CentOS
+
+After you have installed the pre-requisites in your platform, its time to [install bench](#bench)). 
+
+> This guide assumes you are using a personal computer, VPS or a bare-metal server. You also need to be on a *nix system, so any Linux Distribution and MacOS is supported. However, we officially support only the following distributions.
+
+ 
 
 ### MacOS
 
@@ -216,7 +236,29 @@ If you don't have cron service enabled you would have to enable it.
 systemctl enable cronie
 ```
 
-## Install Bench
+[Top](#installation)
+
+--- 
+
+## Bench
+
+
+### What is Bench ?
+To install Frappe, you use Bench CLI. The Bench is a 
+
+- command-line utility 
+- that helps you to install apps 
+- manage multiple sites and 
+- update Frappe / ERPNext apps  
+- Bench will also create nginx and supervisor config files, setup backups and much more.
+
+> Learn more about the architecture [here](/docs/installation/architecture).
+
+
+You will have to install Bench first in order to install Frappe and start developing Frappe Apps.
+
+
+### Install Bench
 
 Install bench as a non-root user
 
@@ -234,18 +276,89 @@ bench --version
 4.1.0
 ```
 
-Create your first bench folder.
-
-```bash
-cd ~
-bench init frappe-bench
-```
-
-After the frappe-bench folder is created, change your directory to it and run this command
-
 ```bash
 bench start
 ```
 
 Congratulations, you have installed bench on to your system.
 
+
+---
+
+## Initialise Bench 
+
+Now when the bench is installed, you will have to initialise it to have a folder structure which will hold multi-tenant Frappe Applications.
+
+You will use following Bench command to initialise the bench:
+
+```bash
+cd ~
+bench init frappe-bench
+```
+
+After the frappe-bench folder is created, change your directory to frappe-bench.
+
+```bash
+cd frappe-bench
+```
+
+[Top](#installation)
+
+---
+
+## Creating a new site
+
+You will have to create a new site and install Frappe and in case you have one, install your custom app, to initialised Frappe Bench.
+
+```bash
+bench new-site site1.local
+```
+
+It will ask for mysql root password and generate folder structure of a new site. It will also ask for administrator password for the new site. 
+
+Here `site1.local` is the name of the site. You can choose your site name as per your scenario. 
+
+You can also make an entry of this sitename in your etc.hosts for mapping the site name with current host:
+
+```
+...
+127.0.0.1   localhost
+
+# add this line
+127.0.0.1   site1.local
+...
+```
+
+[Top](#installation)
+
+---
+
+## Installing Existing App
+
+### Getting the remote apps
+You can get any remote frappe apps by using the get-app command from remote git repository. Example: [ERPNext](https://github.com/frappe/erpnext)
+
+```bash
+  bench get-app erpnext https://github.com/frappe/erpnext
+```
+
+### Installing the apps to your site
+
+To install an app on your new site, use the bench install-app command.
+
+```  bash
+bench --site site1.local install-app erpnext
+```
+
+### Start bench
+To start using the bench, use the bench start command
+
+```bash
+bench start
+```
+
+To login to Frappe / ERPNext, open your browser and go to [your-external-ip]:8000, probably localhost:8000
+
+The default username is "Administrator" and password is what you set when you created the new site.
+
+[Top](#installation)
